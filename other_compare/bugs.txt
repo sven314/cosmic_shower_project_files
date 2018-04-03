@@ -1,0 +1,30 @@
+
+#1
+
+03.04.2018 14:22: Test mit drei identischen Dateien zeigt, dass viele Koinzidenzen doppelt gelistet werden.
+
+Außerdem werden nach 3ern 2er gefunden, die Teil des 3ers sind
+
+# (3er) und + (2er) markieren identische matches
+
+
+1502047690.000000000(Aus Datei Nr. 0) und 1502047690.000000000 (Aus Datei Nr. 1) Sind Der 1. Match. Ihr Abstand betraegt: 0.000000000 Herkunft: A1502047690.000000000(Aus Datei Nr. 0) und 1502047690.000000000 (Aus Datei Nr. 2) Sind Der 2. Match. Ihr Abstand betraegt: 0.000000000 Herkunft: A 3er Coincidence
+1502047690.000000000(Aus Datei Nr. 1) und 1502047690.000000000 (Aus Datei Nr. 2) Sind Der 3. Match. Ihr Abstand betraegt: 0.000000000 Herkunft: A 2er Coincidence
+#1502047691.000000000(Aus Datei Nr. 0) und 1502047691.000000000 (Aus Datei Nr. 1) Sind Der 4. Match. Ihr Abstand betraegt: 0.000000000 Herkunft: A1502047691.000000000(Aus Datei Nr. 0) und 1502047691.000000000 (Aus Datei Nr. 2) Sind Der 5. Match. Ihr Abstand betraegt: 0.000000000 Herkunft: A 3er Coincidence
+#1502047691.000000000(Aus Datei Nr. 0) und 1502047691.000000000 (Aus Datei Nr. 1) Sind Der 6. Match. Ihr Abstand betraegt: 0.000000000 Herkunft: A1502047691.000000000(Aus Datei Nr. 0) und 1502047691.000000000 (Aus Datei Nr. 2) Sind Der 7. Match. Ihr Abstand betraegt: 0.000000000 Herkunft: A 3er Coincidence
++1502047691.000000000(Aus Datei Nr. 1) und 1502047691.000000000 (Aus Datei Nr. 2) Sind Der 8. Match. Ihr Abstand betraegt: 0.000000000 Herkunft: A 2er Coincidence
++1502047691.000000000(Aus Datei Nr. 1) und 1502047691.000000000 (Aus Datei Nr. 2) Sind Der 9. Match. Ihr Abstand betraegt: 0.000000000 Herkunft: A 2er Coincidence
+
+Fehler tritt auch bei compare auf:
+
+
+2017.08.06 19:28:10  0  1502047690.000000000  1-0  0.000000000   2-0  0.000000000   3
+2017.08.06 19:28:10  1  1502047690.000000000  2-1  0.000000000   2
+#2017.08.06 19:28:11  0  1502047691.000000000  1-0  0.000000000   2-0  0.000000000   3
+#2017.08.06 19:28:11  0  1502047691.000000000  1-0  0.000000000   2-0  0.000000000   3
++2017.08.06 19:28:11  1  1502047691.000000000  2-1  0.000000000   2
++2017.08.06 19:28:11  1  1502047691.000000000  2-1  0.000000000   2
+
+
+
+#2

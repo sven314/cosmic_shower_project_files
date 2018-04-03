@@ -1,0 +1,2 @@
+Alternative Implemetierung von compare. Hat den selben Zweck wie Marvins compare, aber anders programmiert.
+Ob beide Programme das Gleiche machen, muss noch geprüft werden. Hies früher compare_v4-1.cpp. 
