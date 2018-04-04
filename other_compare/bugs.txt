@@ -12,7 +12,7 @@ Außerdem werden nach 3ern 2er gefunden, die Teil des 3ers sind. (Update 04.04: 
 1502047691.000000000(Aus Datei Nr. 1) und 1502047691.000000000 (Aus Datei Nr. 2) Sind Der 6. Match. Ihr Abstand betraegt: 0.000000000 Herkunft: A 2er Coincidence
 
 
-Fehler tritt auch bei compare auf:
+Problem tritt auch bei compare auf:
 
 2017.08.06 19:28:10  0  1502047690.000000000  1-0  0.000000000   2-0  0.000000000   3
 2017.08.06 19:28:10  1  1502047690.000000000  2-1  0.000000000   2
@@ -21,7 +21,8 @@ Fehler tritt auch bei compare auf:
 2017.08.06 19:28:12  0  1502047692.000000000  1-0  0.000000000   2-0  0.000000000   3
 2017.08.06 19:28:12  1  1502047692.000000000  2-1  0.000000000   2
 
-
+Sollte nachträglich gefiltert werden, damit auch 1 1,5 2 und 1,5 2 2,5 bei matchkriterium 1 gefunden werden. 
+1,5 nicht als Kleinstes zuzulassen, würde zweite Kombination verhindern.
 
 
 #2
