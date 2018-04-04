@@ -293,7 +293,7 @@ void endOfAlgorithm(time_t algorithmStart, int whiles, std::string reason) {
 		
 }
 
-bool Algorithm(vector<unsigned int>& currentPosition,
+bool Algorithm(vector<unsigned int>& currentPosition,			//returnt ob er fertig ist
 	vector<vector<long double> > & values,
 	long double& matchKriterium,
 	ofstream& output,
@@ -333,8 +333,7 @@ bool Algorithm(vector<unsigned int>& currentPosition,
 
 		for (unsigned int i = 0; i<currentPosition.size(); i++)
 		{
-			if (finished[i]==false) {		//ueberspringe fertige Vektoren
-				if (currentPosition[i]>=(values[i].size()-1))  //Wenn currentPosition[i] bis zur Zahl der Timestamps durchgelaufen ist, ist etwas (eine Datei) fertig.
+			if (!finished[i]&&(currentPosition[i]>=(values[i].size()-1))) {		//ueberspringe fertige Vektoren && //Wenn currentPosition[i] bis zur Zahl der Timestamps durchgelaufen ist, ist etwas (eine Datei) fertig.
 				// Das wird für alle Dateien gemacht.
 				{
 					fertigerVector = i; 
@@ -351,26 +350,28 @@ bool Algorithm(vector<unsigned int>& currentPosition,
 					for(unsigned int i=0; i<currentPosition.size(); i++){
 						
 						if (!finished[i]){
-							noNotFinished++;
+							noNotFinished++;		//Zahl der noch nicht abgearbeiteten Dateien
 							
 							}
 						
 						
 						}
 						
-					if (noNotFinished>=1){
+					if (noNotFinished>=1){		//Wenn noch etwas uebrig ist...
 					
 					processRemains(currentPosition, values, matchKriterium, output,  fertigerVector, verbose, coincidenceCounter, finished, lastValues, maxCoincidents);
-					return false;		//starte Algorithmus neu
+					return false;		//...starte Algorithmus neu
 
-		}
+					}
 		
-				else {return true;}
+					else {return true;}
 					
 
 				}
 			}
 		}	
+		
+		//Beginn der Suche nach matches:
 		unsigned int indexSmallest;
 		for (unsigned int i = 0; i<currentPosition.size(); i++)  {		//Beginne die Suche nach indexSmallest bei erster noch nicht fertiger Datei
 			
@@ -394,10 +395,10 @@ bool Algorithm(vector<unsigned int>& currentPosition,
 		int coincidents = 1;
 		for (unsigned int i = 0; i<currentPosition.size(); i++)   // Alle nicht fertigen Dateien durchgehen und jeweils mit dem bei indexSmallest vergleichen
 		{
-			if (finished[i]==false){
+			if (!finished[i]){
 				
 				
-				//hier wird entschieden ob es ein CoincidenceEreignis ist und es wird gleich in die Datei geschrieben
+				//hier wird entschieden, ob es ein CoincidenceEreignis ist und es wird gleich in die Datei geschrieben
 	
 				 {
 					if ((indexSmallest!=i)&&(fabs(values[i][currentPosition[i]]-values[indexSmallest][currentPosition[indexSmallest]])<=matchKriterium))
@@ -425,7 +426,7 @@ bool Algorithm(vector<unsigned int>& currentPosition,
 		{
 			output<<" "<<coincidents<<"er Coincidence"<<endl;
 		}
-		currentPosition[indexSmallest]++;   //In der Datei, wo der kleinste Timestamp gefunden wurde, soll beim naechsten Durchlauf der darauf folgende genommen werden.
+		currentPosition[indexSmallest]=currentPosition[indexSmallest]+1;   //In der Datei, wo der kleinste Timestamp gefunden wurde, soll beim naechsten Durchlauf der darauf folgende genommen werden.
 		done=true;
 		for (unsigned int i=0; i<currentPosition.size(); i++)
 	

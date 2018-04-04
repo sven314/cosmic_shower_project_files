@@ -1,0 +1,1 @@
+Bereinigt output von compare oder other_compare von solchen Situationen: 1 1,5 2 und 1,5 und 2 gefunden.
