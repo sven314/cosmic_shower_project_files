@@ -3,15 +3,17 @@ dass Treffer identisch scheinen, aber nicht sind, da sie von verschiedenen Stati
 
 
 Beispiel fuer erwartete Eingabe mit Stationsnummer und Timestamp:
-4 502047694.000000000 5 502047695.000000000 6 502047696.000000000
-1 502047692.000000000 2 502047694.000000000
-2 502047691.000000000 1 502047692.000000000 
-5 502047691.000000000 6 502047692.000000000
-1 502047690.000000000 2 502047691.000000000 1 502047692.000000000
-4 502047690.000000000 5 502047691.000000000 6 502047692.000000000
 
-Treffer muessen nach dem ersten Timestamp Absteigend sortiert sein. (Das wird noch nicht geprueft oder korrigiert.)
-Innere Treffer stehen dann vor dem aeusseren, da der Algorithmus das so ausspuckt.
+4 502047690.000000000 5 502047691.000000000 6 502047692.000000000
+1 502047690.000000000 2 502047691.000000000 1 502047692.000000000
+5 502047691.000000000 6 502047692.000000000
+2 502047691.000000000 1 502047692.000000000 
+1 502047692.000000000 2 502047694.000000000
+4 502047694.000000000 5 502047695.000000000 6 502047696.000000000
+
+
+Treffer muessen nach dem ersten Timestamp aufsteigend sortiert sein. (Das wird  geprueft und korrigiert.)
+Innere Treffer stehen dann nach dem aeusseren, da der Algorithmus das so ausspuckt.
 
 Es ist noch notwendig, dass im aeusseren Treffer kein Event enthalten ist, das nach den letzten des inneren Treffers kommt. Beispiel:
 

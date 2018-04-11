@@ -16,6 +16,8 @@
 #include <utility>
 #include <limits.h>		//manche unnoetig
 
+#include <iostream>     // std::cout
+#include <algorithm>   	//std::sort
 
 using namespace std;
 
@@ -26,7 +28,21 @@ struct Event {
 	long double timestamp;
 	unsigned int station;
 	
+	
+	
 	};
+
+struct EventCompare  //https://stackoverflow.com/questions/1380463/sorting-a-vector-of-custom-objects ermoeglicht das Sortieren von Vectotren aus Vektoren aus Events, 
+//definiert, was groesser ist, sortiert aufsteigend nach  Timestamp
+
+{
+    inline bool operator() (const vector<Event> & coinc1, const vector<Event> & coinc2)
+    {
+        return (coinc1[0].timestamp < coinc2[0].timestamp);
+    }
+};
+	
+	
 //Prueft, ob tested in compared enthalten ist
 bool included(vector<vector<Event> > allCoincidents, int tested, int compared, bool verbose){	
 	if(verbose){cout<<"included gestartet"<<endl; }
@@ -209,9 +225,12 @@ int main(int argc, char*argv[])
 		 allCoincidents.push_back(oneCoincidence);
 	}
 	
-
+	//Sortieren
 	
-	//Ausgabe um Lesen zu pruefen
+	
+	sort (allCoincidents.begin(), allCoincidents.end(), EventCompare());
+	
+	//Ausgabe um Lesen und Sortieren zu pruefen
 	
 	cout<<"Zeilenzahl: "<<allCoincidents.size()<<endl;
 	if(verbose){cout<<"Ausgabe beginnt"<<endl;}
@@ -228,15 +247,17 @@ int main(int argc, char*argv[])
 		
 		if(verbose){cout<<endl;}
 	}
+	
+	//Beginn der eigentlichen Pruefung
 	bool includedCoincidents[allCoincidents.size()];
 	
 	for(int i=0; i<allCoincidents.size();i++){		//in includedCoincidents  wird vermerkt, ob eine Koinzidenz in einer anderen enthalten ist.
 		includedCoincidents[i]=false;	//initialisiere mit false
 		}
 	
-	for(int i=0;i<allCoincidents.size();i++) {
+	for(int i=allCoincidents.size()-1;i>=0;i--) {
 		if(verbose){cout<<"i: "<<i<<endl;}
-		for(int j=i+1; j<allCoincidents.size();j++){		//man muss nur maximal bis zum Ende der Liste suchen und faengt eine Zeile unter dem zu Pruefenden an
+		for(int j=i-1; j>=0;j--){		//man muss nur maximal bis zum Anfang der Liste suchen und faengt eine Zeile ueber dem zu Pruefenden an
 			
 			if(included(allCoincidents, i, j, verbose)){
 			includedCoincidents[i]=true;		
