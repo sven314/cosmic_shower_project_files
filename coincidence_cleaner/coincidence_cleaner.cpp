@@ -174,14 +174,14 @@ int main(int argc, char*argv[])
 		getline(dateiInputstream, oneLine);
 		if(oneLine.empty()){continue;}		//ignore empty lines
 	
-	
+			if(verbose){cout<<oneLine<<endl;}
 			//Suche Spaces zum Zerschneiden der Zeilen
 			int space0=0;
 			int space1=oneLine.find(" ",space0+1);
 			int space2=oneLine.find(" ",space1+1);
 			string stationstring, timestring;
-			int oneStation, oneTimestamp;
-			
+			int oneStation;
+			long double oneTimestamp;
 			int counter=0;
 			
 		//Liest eine Zeile
@@ -199,8 +199,10 @@ int main(int argc, char*argv[])
 			newEvent.station=oneStation;
 			
 			timestring=oneLine.substr(space1,space2);
+			if(verbose){cout<<timestring<<endl;}		//Hier sind die Nachkommastellen noch da
 			stringstream str2(timestring);
 			str2>>oneTimestamp;
+			if(verbose){cout<<oneTimestamp<<endl;}		//Hier nicht mehr
 			newEvent.timestamp=oneTimestamp;
 			
 			if(verbose){cout<<newEvent.station<<" ";}

@@ -190,25 +190,30 @@ void Usage()
  //Nimm den Wert bei dem eine Datei fertig war und vergleiche mit allen noch nicht betrachteten Werten de
 //r anderen Dateien bis man dort mehr als das Matchkroiterium vom betrachteten Wet weg ist
 
-void writeMatch(bool verbose, long double firstTimestamp, unsigned int firstFile, long double secondTimestamp, unsigned int secondFile, long unsigned int coincidenceCounter, ofstream& output, char callingFunction){
+void writeMatch(bool verbose, long double firstTimestamp, unsigned int firstFile, long double secondTimestamp,
+		unsigned int secondFile, long unsigned int coincidenceCounter, ofstream& output, char callingFunction, bool consecutive){
 	
-	
-						output<<firstTimestamp<<"(Aus Datei Nr. "<< firstFile<< ") und "
-						<< secondTimestamp<<" (Aus Datei Nr. "<< secondFile<<") Sind Der "
-						<< coincidenceCounter<<". Match. Ihr Abstand betraegt: "<<secondTimestamp-firstTimestamp<<" Herkunft: "<<callingFunction;
+	if(!consecutive){
+		output<<firstFile<<" "<<firstTimestamp<<" "
+		<< secondFile <<" "<<secondTimestamp<<" ";
 						
-						
-						if(verbose){cout<<firstTimestamp<<"(Aus Datei Nr. "<< firstFile<< ") und "
-						<< secondTimestamp<<" (Aus Datei Nr. "<< secondFile<<") Sind Der "
-						<< coincidenceCounter<<". Match. Ihr Abstand betraegt: "<<secondTimestamp-firstTimestamp<<" Herkunft: "<<callingFunction<<endl;}
-						
-						
+	}else{	
+		
+		
+		output<< secondFile <<" "<<secondTimestamp<<" ";
 	
 	
 	}
+	
+	if(verbose){
+		cout<<firstTimestamp<<"(Aus Datei Nr. "<< firstFile<< ") und "
+		<< secondTimestamp<<" (Aus Datei Nr. "<< secondFile<<") Sind Der "
+		<< coincidenceCounter<<". Match. Ihr Abstand betraegt: "<<secondTimestamp-firstTimestamp<<" Herkunft: "<<callingFunction<<endl;
+		
+		}
 
 
-
+}
 
 
 void processRemains(vector<unsigned int>& currentPosition,  
@@ -231,6 +236,7 @@ void processRemains(vector<unsigned int>& currentPosition,
 		
 		}
 	int tempcurrentPosition[currentPosition.size()] ;
+	bool consecutive=false;
 	
 	for (unsigned int i=0; i<currentPosition.size();i++){		//erstelle Kopie von currentPosition, damit nach Ende von processEnd an der richtigen Stelle weitergemacht wird
 		tempcurrentPosition[i]=currentPosition[i]+1;		//+1 Verhindert, dass schon gefundene nochmal gefunden werden (laesst hoffentlich nichts verschwinden(passt schon))
@@ -261,8 +267,8 @@ void processRemains(vector<unsigned int>& currentPosition,
 						//Alternatives Ausgabeformat
 						
 						
-						writeMatch(verbose,values[fertigerVector][currentPosition[fertigerVector]], fertigerVector,values[i][tempcurrentPosition[i]], i, coincidenceCounter,  output, 'R' );
-					
+						writeMatch(verbose,values[fertigerVector][currentPosition[fertigerVector]], fertigerVector,values[i][tempcurrentPosition[i]], i, coincidenceCounter,  output, 'R', consecutive );
+						consecutive=true;  //Beim ersten muessen zwei geschrieben werdren, fdann nur noch eines.
 						
 		
 					tempcurrentPosition[i]++;
@@ -393,6 +399,8 @@ bool Algorithm(vector<unsigned int>& currentPosition,			//returnt ob er fertig i
 			}
 		}
 		int coincidents = 1;
+		
+		int consecutive=false;
 		for (unsigned int i = 0; i<currentPosition.size(); i++)   // Alle nicht fertigen Dateien durchgehen und jeweils mit dem bei indexSmallest vergleichen
 		{
 			if (!finished[i]){
@@ -409,8 +417,8 @@ bool Algorithm(vector<unsigned int>& currentPosition,			//returnt ob er fertig i
 				
 						//Alternatives Ausgabeformat
 						
-						writeMatch(verbose,values[indexSmallest][currentPosition[indexSmallest]], indexSmallest,values[i][currentPosition[i]], i, coincidenceCounter,  output, 'A' );
-						
+						writeMatch(verbose,values[indexSmallest][currentPosition[indexSmallest]], indexSmallest,values[i][currentPosition[i]], i, coincidenceCounter,  output, 'A' , consecutive);
+						consecutive=true;
 					/*	output<<values[indexSmallest][currentPosition[indexSmallest]]<<"(Aus Datei Nr. "<< indexSmallest<< ") und"
 						<< values[i][currentPosition[i]]<<"(Aus Datei Nr. "<< i<<") Sind Der "
 						<< coincidenceCounter<<". Match. Ihr Abstand betraegt: "<<(values[i][currentPosition[i]]-values[indexSmallest][currentPosition[indexSmallest]])<<" Herkunft A"<<endl;*/
@@ -422,10 +430,15 @@ bool Algorithm(vector<unsigned int>& currentPosition,			//returnt ob er fertig i
 		
 		
 		
-		if (coincidents>1)
+		/*if (coincidents>1)
 		{
 			output<<" "<<coincidents<<"er Coincidence"<<endl;
-		}
+		}*/
+		
+		if(coincidents>1){
+			output<<endl;
+			
+			}
 		currentPosition[indexSmallest]=currentPosition[indexSmallest]+1;   //In der Datei, wo der kleinste Timestamp gefunden wurde, soll beim naechsten Durchlauf der darauf folgende genommen werden.
 		done=true;
 		for (unsigned int i=0; i<currentPosition.size(); i++)

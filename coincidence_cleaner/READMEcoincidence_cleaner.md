@@ -21,4 +21,8 @@ Es ist noch notwendig, dass im aeusseren Treffer kein Event enthalten ist, das n
 4 502047690.000000000 5 502047691.000000000 6 502047692.000000000 7 502047693.000000000 gefunden. 
 
 Das Problem ist gering, da solche Situationen vom Algorithmus nicht erzeugt werden.
+
+Bugs:
+
+Der Vergleich ist nicht genau genug, geringe Unterschiede werden uebersehen
  

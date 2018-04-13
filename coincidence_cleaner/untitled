@@ -1,0 +1,12 @@
+
+
+
+int main(){
+long double a=1502047695.886843920;
+
+cout<<a<<endl;
+
+cout << fixed << setprecision(9);
+
+cout<<a<<endl;
+}
