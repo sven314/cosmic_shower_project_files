@@ -306,7 +306,7 @@ void Algorithm(vector<unsigned int>& base,
 						struct tm *tm = localtime(&t);
 						char date[20];
 						strftime(date, sizeof(date), "%Y.%m.%d %H:%M:%S", tm);
-						output<<date<<"  "<<indexSmallest<<"  "<<values[indexSmallest][currentVector[indexSmallest]][base[indexSmallest]]<<"  ";
+						output<<"  "<<indexSmallest<<"  "<<values[indexSmallest][currentVector[indexSmallest]][base[indexSmallest]]<<"  ";
 						coincidents++;
 					}
 					output<<i<<"-"<<indexSmallest<<"  "<<(values[i][currentVector[i]][base[i]]-values[indexSmallest][currentVector[indexSmallest]][base[indexSmallest]])<<"   ";

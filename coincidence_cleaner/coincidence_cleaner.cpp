@@ -18,6 +18,8 @@
 
 #include <iostream>     // std::cout
 #include <algorithm>   	//std::sort
+#include <ctime>
+
 
 using namespace std;
 
@@ -25,7 +27,8 @@ void Usage()
 {cout<<"USAGE"<<endl;}
 struct Event {
 	
-	long double timestamp;
+	struct timespec timestamp;
+	
 	unsigned int station;
 	
 	
@@ -73,12 +76,13 @@ bool included(vector<vector<Event> > allCoincidents, int tested, int compared, b
 			
 			
 			
-		if(allCoincidents[tested][testedLength-k].timestamp-allCoincidents[compared][comparedLength-k].timestamp>0.1){
+		if(allCoincidents[tested][testedLength-k].timestamp-allCoincidents[compared][comparedLength-k].timestampInt!=0){
 			if(verbose){cout<<"timestampUnterschied"<<endl;}
 			
 			
 			return false;
 			}
+
 		
 	
 		if(verbose){cout<<"Kein Unterschied gefunden"<<endl;}
@@ -101,7 +105,9 @@ int main(int argc, char*argv[])
 	int maxCoincidents=INT_MAX;
 	
 
-	long double match=2.5;
+	timespec match;
+	match.tv_sec=2;
+	match.tv_nsec=500000000;
 
 
 	// Einlesen der Zusatzinformationen aus der Konsole
@@ -164,7 +170,7 @@ int main(int argc, char*argv[])
 	//Lies
 	for (unsigned int i = 0; i<maxCoincidentsAtOnce; i++)	{
 		if(verbose) {cout<<"neue Zeile"<<endl;}
-		if (dateiInputstream.eof())//Wenn fertig
+		if (dateiInputstream.eof())  //Wenn fertig
 		{
 			break;
 		}
@@ -179,9 +185,10 @@ int main(int argc, char*argv[])
 			int space0=0;
 			int space1=oneLine.find(" ",space0+1);
 			int space2=oneLine.find(" ",space1+1);
-			string stationstring, timestring;
+			int dec_div=oneLine.find(".",space1+1);
+			string stationstring, timestring_sec, timestring_nsec;
 			int oneStation;
-			long double oneTimestamp;
+			long double oneTimestamp_sec, oneTimestamp_nsec;
 			int counter=0;
 			
 		//Liest eine Zeile
@@ -198,12 +205,19 @@ int main(int argc, char*argv[])
 			str1>>oneStation;
 			newEvent.station=oneStation;
 			
-			timestring=oneLine.substr(space1,space2);
-			if(verbose){cout<<timestring<<endl;}		//Hier sind die Nachkommastellen noch da
-			stringstream str2(timestring);
-			str2>>oneTimestamp;
-			if(verbose){cout<<oneTimestamp<<endl;}		//Hier nicht mehr
-			newEvent.timestamp=oneTimestamp;
+			timestring_sec=oneLine.substr(space1,dec_div);
+			if(verbose){cout<<timestring_sec<<endl;}		//Hier sind die Nachkommastellen noch da
+			stringstream str2(timestring_sec);
+			str2>>oneTimestamp_sec;
+			if(verbose){cout<<oneTimestamp_sec<<endl;}		//Hier nicht mehr
+			newEvent.timestamp.tv_sec=oneTimestamp;
+			
+			timestring_nsec=oneLine.substr(dec_div,space2);
+			if(verbose){cout<<timestring_nsec<<endl;}		//Hier sind die Nachkommastellen noch da
+			stringstream str2(timestring_nsec);
+			str2>>oneTimestamp_nsec;
+			if(verbose){cout<<oneTimestamp_nsec<<endl;}		//Hier nicht mehr
+			newEvent.timestamp.tv_nsec=oneTimestamp;
 			
 			if(verbose){cout<<newEvent.station<<" ";}
 			
@@ -318,7 +332,8 @@ int main(int argc, char*argv[])
 	
 			
 			output<<allCoincidents[i][j].station<<": ";
-			output<<allCoincidents[i][j].timestamp<<"    ";}
+			output<<allCoincidents[i][j].timestamp.tv_sec<<"    ";
+			output<<allCoincidents[i][j].timestamp.tv_nsec<<"    ";}
 			
 		
 		

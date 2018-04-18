@@ -49,6 +49,9 @@
 
 using namespace std;
 
+
+
+
 bool areTimestampsInOrder(string dateiName, bool verbose)
 {   //ueberpruefe ob die Timestamps in der Datei mit Dateinamen, der als string uebergeben wird, zeitlich geordnet sind
 	ifstream dateiInputstream(dateiName.c_str());
@@ -57,8 +60,8 @@ bool areTimestampsInOrder(string dateiName, bool verbose)
 		cout<<"failed to read from file (in check Timestamp order section of code)"<<endl;
 		exit(EXIT_FAILURE);
 	}
-	long double oldValue = 0.0;
-	long double newValue = 0.0;
+	long long double oldValue = 0.0;
+	long long double newValue = 0.0;
 	long unsigned int lineCounter = 0;
 	bool isInOrder = true;
 	string oneLine;
@@ -96,8 +99,8 @@ bool areTimestampsInOrder(string dateiName, bool verbose, unsigned long int& lin
 		cout<<"failed to read from file (in check Timestamp order section of code)"<<endl;
 		exit(EXIT_FAILURE);
 	}
-	long double oldValue = 0.0;
-	long double newValue = 0.0;
+	long long double oldValue = 0.0;
+	long long double newValue = 0.0;
 	lineCounter = 0;
 	bool isInOrder = true;
 	string oneLine;
@@ -135,14 +138,14 @@ void skipColumn(istream& data, int col)
 		data.ignore(numeric_limits<streamsize>::max(), ' '); // col Leerzeichen-getrennte Werte uberspringen
 }
 
-void readToVector(ifstream& inputstream, vector<long double>& oneVector, int& maxValues, int& column, bool verbose)
+void readToVector(ifstream& inputstream, vector<long long double>& oneVector, int& maxValues, int& column, bool verbose)
 {	if (verbose){cout<<"readToVector aufgerufen"<<endl;}
 	// ueberschreibt einen Vektor mit neuen Werten aus der Datei (aus dem inputstream)
 	// es werden maximal "maxValues" viele Eintraege hinzugefuegt,
 	// es wird gestoppt falls keine weiteren Daten im InputFile sind
 	oneVector.clear();
 	string oneLine;
-	long double oneValue;
+	long long double oneValue;
 	for (unsigned int i = 0; i<maxValues; i++)
 	{
 		if (inputstream.eof())
@@ -190,14 +193,14 @@ void Usage()
  //Nimm den Wert bei dem eine Datei fertig war und vergleiche mit allen noch nicht betrachteten Werten de
 //r anderen Dateien bis man dort mehr als das Matchkroiterium vom betrachteten Wet weg ist
 
-void writeMatch(bool verbose, long double firstTimestamp, unsigned int firstFile, long double secondTimestamp,
+void writeMatch(bool verbose, long long double firstTimestamp, unsigned int firstFile, long long double secondTimestamp,
 		unsigned int secondFile, long unsigned int coincidenceCounter, ofstream& output, char callingFunction, bool consecutive){
 	
-	if(!consecutive){
+	if(!consecutive){		//Beim ersten einer Reihe muessen der erste und zweite timestamp geschrieben werden...
 		output<<firstFile<<" "<<firstTimestamp<<" "
 		<< secondFile <<" "<<secondTimestamp<<" ";
 						
-	}else{	
+	}else{	//..bei allen weiteren nur der dazukommende
 		
 		
 		output<< secondFile <<" "<<secondTimestamp<<" ";
@@ -217,15 +220,15 @@ void writeMatch(bool verbose, long double firstTimestamp, unsigned int firstFile
 
 
 void processRemains(vector<unsigned int>& currentPosition,  
-	vector<vector<long double> > & values,
-	long double& matchKriterium,
+	vector<vector<long long double> > & values,
+	long long double& matchKriterium,
 	ofstream& output,
 
 	int& fertigerVector, 
 	bool& verbose,
 	int& coincidenceCounter,
 	vector<bool>& finished,
-	vector<long double>& lastValues,
+	vector<long long double>& lastValues,
 	int maxCoincidents) 
 	
 	
@@ -300,8 +303,8 @@ void endOfAlgorithm(time_t algorithmStart, int whiles, std::string reason) {
 }
 
 bool Algorithm(vector<unsigned int>& currentPosition,			//returnt ob er fertig ist
-	vector<vector<long double> > & values,
-	long double& matchKriterium,
+	vector<vector<long long double> > & values,
+	long long double& matchKriterium,
 	ofstream& output,
 
 	int& fertigerVector, 
@@ -309,7 +312,7 @@ bool Algorithm(vector<unsigned int>& currentPosition,			//returnt ob er fertig i
 	int& coincidenceCounter,
 	vector<bool>& finished,
 
-	vector<long double>& lastValues,
+	vector<long long double>& lastValues,
 	int maxCoincidents)
 	
 {	
@@ -381,7 +384,7 @@ bool Algorithm(vector<unsigned int>& currentPosition,			//returnt ob er fertig i
 		unsigned int indexSmallest;
 		for (unsigned int i = 0; i<currentPosition.size(); i++)  {		//Beginne die Suche nach indexSmallest bei erster noch nicht fertiger Datei
 			
-			if(finished[i]==false){
+			if(!finished[i]){
 				indexSmallest = i;
 				break;
 				}	
@@ -415,10 +418,12 @@ bool Algorithm(vector<unsigned int>& currentPosition,			//returnt ob er fertig i
 						coincidenceCounter++;
 						coincidents++;
 				
-						//Alternatives Ausgabeformat
+					
 						
 						writeMatch(verbose,values[indexSmallest][currentPosition[indexSmallest]], indexSmallest,values[i][currentPosition[i]], i, coincidenceCounter,  output, 'A' , consecutive);
 						consecutive=true;
+						
+							//Alternatives Ausgabeformat
 					/*	output<<values[indexSmallest][currentPosition[indexSmallest]]<<"(Aus Datei Nr. "<< indexSmallest<< ") und"
 						<< values[i][currentPosition[i]]<<"(Aus Datei Nr. "<< i<<") Sind Der "
 						<< coincidenceCounter<<". Match. Ihr Abstand betraegt: "<<(values[i][currentPosition[i]]-values[indexSmallest][currentPosition[indexSmallest]])<<" Herkunft A"<<endl;*/
@@ -430,16 +435,17 @@ bool Algorithm(vector<unsigned int>& currentPosition,			//returnt ob er fertig i
 		
 		
 		
-		/*if (coincidents>1)
-		{
-			output<<" "<<coincidents<<"er Coincidence"<<endl;
-		}*/
+	
 		
-		if(coincidents>1){
+		if(coincidents>1){		//Schreibe in der naechsten Zeile weiter
 			output<<endl;
 			
 			}
 		currentPosition[indexSmallest]=currentPosition[indexSmallest]+1;   //In der Datei, wo der kleinste Timestamp gefunden wurde, soll beim naechsten Durchlauf der darauf folgende genommen werden.
+		
+		
+		
+		//Pruefe, ob noch mindestens eine Datei uebrig ist
 		done=true;
 		for (unsigned int i=0; i<currentPosition.size(); i++)
 	
@@ -472,8 +478,8 @@ int main(int argc, char*argv[])
 	string outputDateiName;
 	vector <string> dateiName;
 	time_t start, end, readToVectorTime, checkTimestampOrderTime, algorithmTime;
-	long double matchKriterium;//in Sekunden
-	long double oneValue;
+	long long double matchKriterium;//in Sekunden
+	long long double oneValue;
 	int maxTimestampsAtOnce = INT_MAX, coincidenceCounter=0;		//Bug: Bei ./compare pps.txt sig.txt -o output2000.txt -v -m 2000 fehlen am Ende 5 Minuten, 
 	int maxCoincidents=INT_MAX;
 	
@@ -562,7 +568,7 @@ int main(int argc, char*argv[])
 
 	start = time(0);	//Zur Berechnung der Prüfungsdauer der Reihenfolge
 	vector<unsigned long int> lines;
-/*	if (notSorted)
+	if (true)
 	{
 		for (unsigned int i = 0; i<dateiName.size(); i++)
 		{
@@ -588,7 +594,7 @@ int main(int argc, char*argv[])
 				system(outs);
 			}
 		}
-	}*/
+	}
 //momentan unnoetig
 	/*end = time(0);
 	checkTimestampOrderTime = end-start;
@@ -608,6 +614,9 @@ int main(int argc, char*argv[])
 	}
 	
 	
+	
+	
+	
 	ofstream output(outputDateiName.c_str());
 	output.precision(9);
 	output<<fixed;
@@ -621,7 +630,7 @@ int main(int argc, char*argv[])
 	{
 		cout<<endl<<"Starte nun den Algorithmus...."<<endl<<endl;
 	}
-	vector<vector<long double> > values;
+	vector<vector<long long double> > values;
 	
 	/* Struktur von Values:			Erster Index DateiNr zweiter index WertNr,  Wert Nr ergibt sich aus currentPosition 
 	 * 
@@ -633,7 +642,7 @@ int main(int argc, char*argv[])
 	vector<bool> finished;		
 	
 	//Welche Dateien sind fertig?
-	vector<long double> lastValues;		//Was war der letzte betrachtete Wert in einer fertigen Datei? 
+	vector<long long double> lastValues;		//Was war der letzte betrachtete Wert in einer fertigen Datei? 
 
 	values.resize(dateiName.size());
 	vector<unsigned int> currentPosition;
@@ -696,6 +705,12 @@ int main(int argc, char*argv[])
 			
 	}
 //	bool dateiEmpty[currentPosition.size()];
+
+	//Sortieren
+	
+	
+
+
 	
 	bool algorithmFinished=false;
 	while(!algorithmFinished){
