@@ -34,6 +34,34 @@ struct Event {
 	
 	
 	};
+	
+	
+bool operator <(const timespec& time1, const timespec& time2)
+{
+    if (time1.tv_sec == time2.tv_sec)
+        return time1.tv_nsec < time2.tv_nsec;
+    else
+        return time1.tv_sec < time2.tv_sec;
+}
+
+
+bool operator >(const timespec& time1, const timespec& time2)
+{
+    if (time1.tv_sec == time2.tv_sec)
+        return time1.tv_nsec > time2.tv_nsec;
+    else
+        return time1.tv_sec > time2.tv_sec;
+}
+timespec operator +(const timespec& time1, const timespec& time2)
+{
+    struct timespec;
+    
+    timespec.tv_sec=time1.tv_sec+time2.tv_sec+(time1.tv_nsec+time2.tv_nsec)%1000000000;
+}
+
+
+
+
 
 struct EventCompare  //https://stackoverflow.com/questions/1380463/sorting-a-vector-of-custom-objects ermoeglicht das Sortieren von Vectotren aus Vektoren aus Events, 
 //definiert, was groesser ist, sortiert aufsteigend nach  Timestamp
