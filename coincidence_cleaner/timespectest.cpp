@@ -22,12 +22,30 @@ class precise_time{
         {
         }
         
+     public: precise_time(double time)  //
+        {
+			if(time<0){
+				sign=-1;
+				time=-time;
+				}
+			secnumber=static_cast<long long>(time)/1;
+			nsecnumber=static_cast<long>((time-secnumber)*1000000000LL);
+        }
+        
     public: precise_time(string str) //Konstruktor zum Lesen aus einen String ...####.#########
         {	long long int newsec,newnsec;
 			string secnumberstr, nsecnumberstr;
 			long unsigned int dec_div=str.find(".");
 			
-			secnumberstr=str.substr(0,dec_div);
+			if((str.substr(0,1)).compare("-")){
+				sign=-1;
+				secnumberstr=str.substr(1,dec_div);
+				}else  {sign=1;
+					secnumberstr=str.substr(0,dec_div);
+					
+					}
+			
+			
 			
 			
 			stringstream str1(secnumberstr);		
@@ -60,21 +78,29 @@ class precise_time{
 
 friend bool operator <(const precise_time& time1, const precise_time& time2)		//ohne friend wird this als linkes Argument genommen
 {
-    if (time1.secnumber == time2.secnumber)
-        return time1.nsecnumber < time2.nsecnumber;
+    if (time1.secnumber*time1.sign == time2.secnumber*time2.sign)
+        return time1.nsecnumber*time1.sign < time2.nsecnumber*time2.sign;
     else
-        return time1.secnumber< time2.secnumber;
+        return time1.secnumber*time1.sign< time2.secnumber*time2.sign;
 }
 
 
 friend bool operator >(const precise_time& time1, const precise_time& time2)
 {
-    if (time1.secnumber == time2.secnumber)
-        return time1.nsecnumber > time2.nsecnumber;
+    if (time1.secnumber*time1.sign == time2.secnumber*time2.sign)
+        return time1.nsecnumber*time1.sign > time2.nsecnumber*time2.sign;
     else
-        return time1.secnumber > time2.secnumber;
+        return time1.secnumber*time1.sign > time2.secnumber*time2.sign;
 }
 
+
+friend const precise_time operator -(precise_time& time){
+	
+	time.sign=-1*time.sign;
+	return time;
+	}
+	
+	
 friend const precise_time operator +(const precise_time& time1, const precise_time& time2)
 {
     precise_time result(time1.secnumber+time2.secnumber+((time1.nsecnumber+time2.nsecnumber)/1000000000LL),
@@ -85,27 +111,16 @@ friend const precise_time operator +(const precise_time& time1, const precise_ti
 }
 
 friend const precise_time operator -(const precise_time& time1, const precise_time& time2)
-{	long long newsec, newnsec;
+{	
 	
-	
-	newsec=time1.secnumber-time2.secnumber;
-	newnsec=time1.nsecnumber-time2.nsecnumber;
-	
-	
-	if(newnsec<0){
-		newsec=newsec-1;
-		newnsec=newnsec+1000000000LL;
-		
-		
-		
-		}
-	
-    precise_time result(newsec,newnsec);
+    precise_time result();
+    
+    result=(time1+(-time2));
     
     
     
   
-    return result;
+    return ;
 }
 
 
@@ -115,6 +130,7 @@ friend ostream& operator <<(ostream &, const precise_time&);
 
 public: long long sec(){return secnumber;}
 public: long long nsec(){return nsecnumber;}
+
 
 };
 
