@@ -1,0 +1,88 @@
+
+Klasse kann Zeiten mit Genauigkeit 1 Nanosekunde speichern und mit ihnen rechnen.
+
+Struktur:
+
+Vorkomma und Nachkommaanteil werden getrennt in long long gespeichert, Vorkommateil von 0 bis MAXLONGLONG Nachkommateil von 0 bis 1000000000-1
+Vorzeichen wird getrennt gespeichert
+	
+	
+	
+Getter:
+
+
+
+long long  sec();
+long long  nsec();
+int sign();
+
+
+	
+Konstruktoren:
+
+	
+precise_time(long long secn, long long nsecn, int signn);		//Konstruktor mit Angabe der einzelnen Bestandteile
+        
+precise_time(double time);  //Konstruktor aus Double mit Vorzeichen
+      
+        
+precise_time(std::string str); //Konstruktor zum Lesen aus einen String der Form: ...####.######### (Weniger Nachkommastellen sind erlaubt, mehr nicht.)
+   
+   
+
+	
+	
+	
+Operatoren:
+	
+	
+a) mathematische Operatoren:
+	verhalten sich grundsaetzlich wie erwartet
+	
+	aa) Rechenzeichen:
+	
+	precise_time operator +( precise_time time1,  precise_time time2);
+		
+/!	precise_time operator *( double factor,   precise_time time); //Genauigkeitsverluste möglich
+
+/!	precise_time operator *( precise_time time, double factor );  //Genauigkeitsverluste möglich
+	
+/!	precise_time operator /( precise_time time, double divisor);  //Genauigkeitsverluste möglich, divisor!=0
+
+	precise_time operator -( precise_time time1,  precise_time time2);		//binaeres -
+
+	precise_time operator -( precise_time time);		//unaeres -
+
+	ab) Vergleichsoperatoren
+	
+	bool operator <(precise_time time1, precise_time time2);	
+	
+	bool operator >(precise_time time1, precise_time time2);
+	
+	bool operator ==(precise_time time1, precise_time time2);
+	
+	bool operator !=(precise_time time1, precise_time time2);	
+	
+	bool operator >=(precise_time time1, precise_time time2);
+	
+	bool operator <=(precise_time time1, precise_time time2);	
+
+b) andere Operatoren:
+
+	zur Ausgabe <<:
+		std::ostream& operator << (std::ostream& stream, precise_time& time);
+		
+		
+		fuellt links mit " " auf, gibt immer 9 Nachkommastellen aus.
+		
+		
+Funktionen:
+
+a) mathematische Funktionen:
+
+	Betrag:
+	precise_time abs( precise_time time1);
+
+
+
+
