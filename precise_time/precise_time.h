@@ -56,7 +56,7 @@ class precise_time{
     public: precise_time(double time);  //
       
         
-	public: precise_time(std::string str); //Konstruktor zum Lesen aus einen String ...####.#########
+	public: precise_time(std::string str); //Konstruktor zum Lesen aus einen String ...####.######### weitere Nachkommastellen werden abgeschnitten
    
    
 	//Getter
@@ -80,7 +80,13 @@ class precise_time{
 	
 	friend    precise_time operator *( precise_time time, double factor );
 	
+	friend    precise_time operator *( long long factor,   precise_time time);
+	
+	friend    precise_time operator *( precise_time time, long long factor );	
+	
 	friend    precise_time operator /( precise_time time, double divisor );
+	
+	friend    precise_time operator /( precise_time time, long long divisor );
 
 	friend    precise_time operator -( precise_time time1,  precise_time time2);		//binaeres -
 

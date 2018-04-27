@@ -1,3 +1,5 @@
+
+
 #include <ctime>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +12,8 @@
 #include <string>
 #include <iomanip>
 #include <math.h>
+
+#include <algorithm>
 
 #include "precise_time.h"
 using namespace std;
@@ -66,7 +70,7 @@ precise_time::precise_time(string str) //Konstruktor zum Lesen aus einen String 
 			
 			
 			
-			nsecnumberstr=str.substr(dec_div+1, str.length());
+			nsecnumberstr=str.substr(dec_div+1,min(int(9), int(str.length()-1-dec_div)));
 			
 	
 			long long n=9-nsecnumberstr.length();
@@ -227,25 +231,32 @@ bool operator <=( precise_time time1,  precise_time time2)
   
     return result;
 }
+
  precise_time operator *( double factor,  precise_time time) {
 	 
-	 double newsec, newnsec;
+	 long double newsec, newnsec;
 	 
 	 int newsign, factorSign;
 	 if(factor<0){factorSign=-1;}
 	 else{factorSign=1;}
 	 
-	 
+	 factor=factorSign*factor;
 	 
 	 newsign=factorSign*time.sign();
 		 
-		newnsec=time.nsec()*factor*factorSign;
+		long double a=factor*time.sec();
+		long double b=factor*time.nsec();
 		
-		newsec=factor*time.sec()+(long long)newnsec/1000000000LL;
+		cout<<b<<" "<<int(b)<<endl;
+		int u=int(b)/1000000000LL;
+		cout<<"Ueberlauf: "<<u<<endl;
+		long double A=int(a)+u;
 		
-		newnsec=(newsec-(long long) newsec)*1000000000LL+time.nsec()*factor*factorSign-(factor*time.sec()+(long long)newnsec/1000000000LL)*1000000000LL;
+		long double B=round(b)-1000000000LL*u+(a-int(A))/(1000000000LL);
+		
+	
 		 
-	precise_time result((long long)(newsec), (long long)(newnsec), newsign);
+	precise_time result((long long)(A), (long long)(B), newsign);
 	
 	 
 		 
@@ -269,6 +280,60 @@ bool operator <=( precise_time time1,  precise_time time2)
 	 
 	 
 	 }
+ 
+precise_time operator *(long long factor, precise_time time){
+	
+	
+	
+	
+	
+	
+	
+	 
+	 
+	 
+	 int newsign, factorSign;
+	 if(factor<0){factorSign=-1;}
+	 else{factorSign=1;}
+	 
+	 factor=factorSign*factor;
+	 
+	 newsign=factorSign*time.sign();
+		 
+		long long int a=factor*time.sec();
+		long long int b=factor*time.nsec();
+		
+		cout<<b<<" "<<b<<endl;
+		int u=b/1000000000LL;
+		cout<<"Ueberlauf: "<<u<<endl;
+		long long A=int(a)+u;
+		
+		long long B=round(b)-1000000000LL*u+(a-A)/(1000000000LL);
+		
+	
+		 
+	precise_time result(A, B, newsign);
+	
+	 
+		 
+	return result;
+	 
+	 
+	 
+	 
+	 }
+	 
+precise_time operator *( precise_time time,  long long factor) {
+	
+	
+	
+	precise_time result(0.0);
+	
+	result=factor*time;
+		 
+	return result;
+	
+}
 	 
 precise_time operator /( precise_time time,  double divisor) {
 	 
@@ -284,7 +349,15 @@ precise_time operator /( precise_time time,  double divisor) {
 	 
 	 }
  
- 
+ precise_time operator /( precise_time time,  long long divisor) {
+	 
+	 
+	 
+	 return time/(double(divisor));
+	 
+	 
+	 
+	 }
  
  precise_time operator -( precise_time time1,  precise_time time2)
 {	

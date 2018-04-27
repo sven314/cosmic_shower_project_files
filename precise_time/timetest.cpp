@@ -21,10 +21,10 @@ int main() {
 
 
 
-precise_time stringtime("2.0");
+precise_time stringtime("2.1234567890");
 precise_time stringtime2("-2.1");
-
-precise_time sum(0.0);
+cout<< stringtime.sec()<<":"<<stringtime.nsec();
+precise_time product(0.0);
 
 //cout<<time1;
 //cout<<(time1.sec()+time2.sec());
@@ -32,22 +32,13 @@ precise_time sum(0.0);
 cout<<endl;
 double a=0, b=0, c;
 
-cout<<stringtime<<endl;
-cout<<stringtime2<<endl;
-sum=stringtime-stringtime2;
-cout<<sum<<endl;
-
-sum=2.0*sum;
+product=5LL*stringtime;
+cout<<stringtime<<endl<<product<<endl;
 
 
-cout<<sum<<endl;
 
-sum=sum*2.0;
 
-cout<<sum<<endl;
-sum=sum/3.0;
 
-cout<<sum<<endl;
 
 //c=a-b;
 //cout<<c<<endl;
