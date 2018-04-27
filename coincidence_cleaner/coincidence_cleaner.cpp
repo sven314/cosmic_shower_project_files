@@ -19,23 +19,36 @@
 #include <iostream>     // std::cout
 #include <algorithm>   	//std::sort
 #include <ctime>
-
+#include "../precise_time/precise_time.h"
 
 using namespace std;
 
 void Usage()
 {cout<<"USAGE"<<endl;}
-struct Event {
+class event {
 	
-	struct timespec timestamp;
+	precise_time timestamp;
 	
 	unsigned int station;
 	
 	
 	
+event::event(precise_time time, unsigned int nstation) : timestamp(time), station(nstation), signdigit(signn) //einfacher Konstruktor
+        {
+        }
+	
+	public precise_time timestamp(){
+		return timestamp;
+		
+		}
+	public unsigned int station(){
+		
+		return station;
+		}
+	
 	};
 	
-	
+/*	
 bool operator <(const timespec& time1, const timespec& time2)
 {
     if (time1.tv_sec == time2.tv_sec)
@@ -59,7 +72,7 @@ timespec operator +(const timespec& time1, const timespec& time2)
     timespec.tv_sec=time1.tv_sec+time2.tv_sec+(time1.tv_nsec+time2.tv_nsec)%1000000000;
 }
 
-
+*/
 
 
 
@@ -69,7 +82,7 @@ struct EventCompare  //https://stackoverflow.com/questions/1380463/sorting-a-vec
 {
     inline bool operator() (const vector<Event> & coinc1, const vector<Event> & coinc2)
     {
-        return (coinc1[0].timestamp < coinc2[0].timestamp);
+        return (coinc1[0].timestamp() < coinc2[0].timestamp());
     }
 };
 	
@@ -89,11 +102,11 @@ bool included(vector<vector<Event> > allCoincidents, int tested, int compared, b
 	
 		
 		if (verbose){
-			cout<<"vergleiche "<<allCoincidents[tested][testedLength-k].station<<" "<<allCoincidents[tested][testedLength-k].timestamp<<" mit "<<allCoincidents[compared][comparedLength-k].station<<" "<<allCoincidents[compared][comparedLength-k].timestamp<<endl;
+			cout<<"vergleiche "<<allCoincidents[tested][testedLength-k].station()<<" "<<allCoincidents[tested][testedLength-k].timestamp()<<" mit "<<allCoincidents[compared][comparedLength-k].station<<" "<<allCoincidents[compared][comparedLength-k].timestamp<<endl;
 			cout<<"k: "<<k<<endl;
 			}
 	
-		if(allCoincidents[tested][testedLength-k].station!=allCoincidents[compared][comparedLength-k].station){
+		if(allCoincidents[tested][testedLength-k].station()!=allCoincidents[compared][comparedLength-k].station()){
 			
 			
 			
@@ -104,7 +117,7 @@ bool included(vector<vector<Event> > allCoincidents, int tested, int compared, b
 			
 			
 			
-		if(allCoincidents[tested][testedLength-k].timestamp-allCoincidents[compared][comparedLength-k].timestampInt!=0){
+		if((allCoincidents[tested][testedLength-k].timestamp()-allCoincidents[compared][comparedLength-k].timestamp())!=0){
 			if(verbose){cout<<"timestampUnterschied"<<endl;}
 			
 			
@@ -133,9 +146,8 @@ int main(int argc, char*argv[])
 	int maxCoincidents=INT_MAX;
 	
 
-	timespec match;
-	match.tv_sec=2;
-	match.tv_nsec=500000000;
+	precise_time match(2.5);
+
 
 
 	// Einlesen der Zusatzinformationen aus der Konsole
@@ -213,7 +225,7 @@ int main(int argc, char*argv[])
 			int space0=0;
 			int space1=oneLine.find(" ",space0+1);
 			int space2=oneLine.find(" ",space1+1);
-			int dec_div=oneLine.find(".",space1+1);
+			//int dec_div=oneLine.find(".",space1+1);
 			string stationstring, timestring_sec, timestring_nsec;
 			int oneStation;
 			long double oneTimestamp_sec, oneTimestamp_nsec;
@@ -226,33 +238,37 @@ int main(int argc, char*argv[])
 			if(verbose){cout<<"new Timestamp"<<endl;}
 			try{
 			
-			Event newEvent;
+		
 			
 			stationstring=oneLine.substr(space0,space1);
 			stringstream str1(stationstring);
 			str1>>oneStation;
-			newEvent.station=oneStation;
+		
 			
-			timestring_sec=oneLine.substr(space1,dec_div);
-			if(verbose){cout<<timestring_sec<<endl;}		//Hier sind die Nachkommastellen noch da
+			precise_time newTime(oneLine.substr(space1,space2));
+			
+			
+			
+			Event newEvent(newTime, oneStation);
+			/*if(verbose){cout<<timestring_sec<<endl;}		//Hier sind die Nachkommastellen noch da
 			stringstream str2(timestring_sec);
 			str2>>oneTimestamp_sec;
 			if(verbose){cout<<oneTimestamp_sec<<endl;}		//Hier nicht mehr
-			newEvent.timestamp.tv_sec=oneTimestamp;
+			newEvent.timestamp.tv_sec=oneTimestamp;*/
 			
-			timestring_nsec=oneLine.substr(dec_div,space2);
+			/*timestring_nsec=oneLine.substr(dec_div,space2);
 			if(verbose){cout<<timestring_nsec<<endl;}		//Hier sind die Nachkommastellen noch da
 			stringstream str2(timestring_nsec);
 			str2>>oneTimestamp_nsec;
 			if(verbose){cout<<oneTimestamp_nsec<<endl;}		//Hier nicht mehr
 			newEvent.timestamp.tv_nsec=oneTimestamp;
-			
-			if(verbose){cout<<newEvent.station<<" ";}
+			*/
+			if(verbose){cout<<newEvent.station()<<" ";}
 			
 	
 			oneCoincidence.push_back(newEvent);
 			
-			if(verbose){cout<<oneCoincidence[counter].station<<endl;}
+			if(verbose){cout<<oneCoincidence[counter].station()<<endl;}
 			//Schiebe die spaces 0--2, 1 hinter 2 und 2 hinter neue 1
 			space0=space2;
 			space1=oneLine.find(" ",space2+1);
@@ -284,8 +300,8 @@ int main(int argc, char*argv[])
 			
 			if(verbose){
 				
-				cout<<allCoincidents[i][j].station<<": ";
-				cout<<allCoincidents[i][j].timestamp<<"    ";}
+				cout<<allCoincidents[i][j].station()<<": ";
+				cout<<allCoincidents[i][j].timestamp()<<"    ";}
 			
 		}
 		
@@ -359,9 +375,9 @@ int main(int argc, char*argv[])
 		for(int j=0; j<allCoincidents[i].size(); j++){
 	
 			
-			output<<allCoincidents[i][j].station<<": ";
-			output<<allCoincidents[i][j].timestamp.tv_sec<<"    ";
-			output<<allCoincidents[i][j].timestamp.tv_nsec<<"    ";}
+			output<<allCoincidents[i][j].station()<<": ";
+			output<<allCoincidents[i][j].timestamp()<<"    ";
+			output<<allCoincidents[i][j].timestamp()<<"    ";}
 			
 		
 		
