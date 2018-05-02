@@ -33,15 +33,16 @@ class event {
 	
 	
 	
-event::event(precise_time time, unsigned int nstation) : timestamp(time), station(nstation), signdigit(signn) //einfacher Konstruktor
+
+public: event(precise_time time, unsigned int nstation) : timestamp(time), station(nstation) //einfacher Konstruktor
         {
         }
 	
-	public precise_time timestamp(){
+	public: precise_time get_timestamp(){
 		return timestamp;
 		
 		}
-	public unsigned int station(){
+	public: unsigned int get_station(){
 		
 		return station;
 		}
@@ -80,15 +81,15 @@ struct EventCompare  //https://stackoverflow.com/questions/1380463/sorting-a-vec
 //definiert, was groesser ist, sortiert aufsteigend nach  Timestamp
 
 {
-    inline bool operator() (const vector<Event> & coinc1, const vector<Event> & coinc2)
-    {
-        return (coinc1[0].timestamp() < coinc2[0].timestamp());
+    inline bool operator() ( vector<event> & coinc1, vector<event> & coinc2)
+    {	precise_time a=coinc1[0].get_timestamp(), b=coinc2[0].get_timestamp();
+        return (a< b);
     }
 };
 	
 	
 //Prueft, ob tested in compared enthalten ist
-bool included(vector<vector<Event> > allCoincidents, int tested, int compared, bool verbose){	
+bool included(vector<vector<event> > allCoincidents, int tested, int compared, bool verbose){	
 	if(verbose){cout<<"included gestartet"<<endl; }
 	
 	
@@ -102,11 +103,11 @@ bool included(vector<vector<Event> > allCoincidents, int tested, int compared, b
 	
 		
 		if (verbose){
-			cout<<"vergleiche "<<allCoincidents[tested][testedLength-k].station()<<" "<<allCoincidents[tested][testedLength-k].timestamp()<<" mit "<<allCoincidents[compared][comparedLength-k].station<<" "<<allCoincidents[compared][comparedLength-k].timestamp<<endl;
+			cout<<"vergleiche "<<allCoincidents[tested][testedLength-k].get_station()<<" "<<allCoincidents[tested][testedLength-k].get_timestamp()<<" mit "<<allCoincidents[compared][comparedLength-k].get_station()<<" "<<allCoincidents[compared][comparedLength-k].get_timestamp()<<endl;
 			cout<<"k: "<<k<<endl;
 			}
 	
-		if(allCoincidents[tested][testedLength-k].station()!=allCoincidents[compared][comparedLength-k].station()){
+		if(allCoincidents[tested][testedLength-k].get_station()!=allCoincidents[compared][comparedLength-k].get_station()){
 			
 			
 			
@@ -117,7 +118,7 @@ bool included(vector<vector<Event> > allCoincidents, int tested, int compared, b
 			
 			
 			
-		if((allCoincidents[tested][testedLength-k].timestamp()-allCoincidents[compared][comparedLength-k].timestamp())!=0){
+		if((allCoincidents[tested][testedLength-k].get_timestamp()-allCoincidents[compared][comparedLength-k].get_timestamp())!=0){
 			if(verbose){cout<<"timestampUnterschied"<<endl;}
 			
 			
@@ -136,7 +137,7 @@ bool included(vector<vector<Event> > allCoincidents, int tested, int compared, b
 	}
 
 int main(int argc, char*argv[])
-{
+{	cout<<"coincidence_cleaner started"<<endl<<endl;
 	string outputDateiName="cleaned_out.txt";
 	vector <string> dateiName;
 	
@@ -188,7 +189,12 @@ int main(int argc, char*argv[])
 	}	
 	
 	int k=0;
-	
+	if (argc-optind<1)
+	{
+		perror("Falsche Eingabe, zu wenige Argumente!\n");
+		Usage();
+		return -1;
+	}
 	for (int i = optind; i<argc; i++)
 	{
 		//
@@ -204,8 +210,8 @@ int main(int argc, char*argv[])
 
 	ifstream dateiInputstream(dateiName[0].c_str());
 	string oneLine;
-	vector<Event>  oneCoincidence;			//Eine kKoinzidenz ist eine Vector von Events
-	vector<vector<Event> > allCoincidents;	//	Alle Koinzidenzen als Vektor aus Vektoren aus Events
+	vector<event>  oneCoincidence;			//Eine kKoinzidenz ist eine Vector von Events
+	vector<vector<event> > allCoincidents;	//	Alle Koinzidenzen als Vektor aus Vektoren aus Events
 	
 	//Lies
 	for (unsigned int i = 0; i<maxCoincidentsAtOnce; i++)	{
@@ -226,9 +232,9 @@ int main(int argc, char*argv[])
 			int space1=oneLine.find(" ",space0+1);
 			int space2=oneLine.find(" ",space1+1);
 			//int dec_div=oneLine.find(".",space1+1);
-			string stationstring, timestring_sec, timestring_nsec;
+			string stationstring, timestring;//timestring_sec, timestring_nsec;
 			int oneStation;
-			long double oneTimestamp_sec, oneTimestamp_nsec;
+			//long double oneTimestamp_sec, oneTimestamp_nsec;
 			int counter=0;
 			
 		//Liest eine Zeile
@@ -249,26 +255,14 @@ int main(int argc, char*argv[])
 			
 			
 			
-			Event newEvent(newTime, oneStation);
-			/*if(verbose){cout<<timestring_sec<<endl;}		//Hier sind die Nachkommastellen noch da
-			stringstream str2(timestring_sec);
-			str2>>oneTimestamp_sec;
-			if(verbose){cout<<oneTimestamp_sec<<endl;}		//Hier nicht mehr
-			newEvent.timestamp.tv_sec=oneTimestamp;*/
-			
-			/*timestring_nsec=oneLine.substr(dec_div,space2);
-			if(verbose){cout<<timestring_nsec<<endl;}		//Hier sind die Nachkommastellen noch da
-			stringstream str2(timestring_nsec);
-			str2>>oneTimestamp_nsec;
-			if(verbose){cout<<oneTimestamp_nsec<<endl;}		//Hier nicht mehr
-			newEvent.timestamp.tv_nsec=oneTimestamp;
-			*/
-			if(verbose){cout<<newEvent.station()<<" ";}
+			event newEvent(newTime, oneStation);
+		
+			if(verbose){cout<<newEvent.get_station()<<" ";}
 			
 	
 			oneCoincidence.push_back(newEvent);
 			
-			if(verbose){cout<<oneCoincidence[counter].station()<<endl;}
+			if(verbose){cout<<oneCoincidence[counter].get_station()<<endl;}
 			//Schiebe die spaces 0--2, 1 hinter 2 und 2 hinter neue 1
 			space0=space2;
 			space1=oneLine.find(" ",space2+1);
@@ -300,8 +294,8 @@ int main(int argc, char*argv[])
 			
 			if(verbose){
 				
-				cout<<allCoincidents[i][j].station()<<": ";
-				cout<<allCoincidents[i][j].timestamp()<<"    ";}
+				cout<<allCoincidents[i][j].get_station()<<": ";
+				cout<<allCoincidents[i][j].get_timestamp()<<"    ";}
 			
 		}
 		
@@ -329,7 +323,7 @@ int main(int argc, char*argv[])
 				
 			if(verbose){cout<<"j: "<<j<<" "<<endl;}
 		
-			if(allCoincidents[i][0].timestamp-allCoincidents[j][0].timestamp>match){
+			if(allCoincidents[i][0].get_timestamp()-allCoincidents[j][0].get_timestamp()>match){
 				break;}		//Suche nicht mehr weiter, wenn die Zeit-Abstaende zu gross werden
 			
 			
@@ -375,9 +369,9 @@ int main(int argc, char*argv[])
 		for(int j=0; j<allCoincidents[i].size(); j++){
 	
 			
-			output<<allCoincidents[i][j].station()<<": ";
-			output<<allCoincidents[i][j].timestamp()<<"    ";
-			output<<allCoincidents[i][j].timestamp()<<"    ";}
+			output<<allCoincidents[i][j].get_station()<<": ";
+			output<<allCoincidents[i][j].get_timestamp()<<"    ";
+			output<<allCoincidents[i][j].get_timestamp()<<"    ";}
 			
 		
 		

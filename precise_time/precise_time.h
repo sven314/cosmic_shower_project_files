@@ -58,6 +58,7 @@ class precise_time{
         
 	public: precise_time(std::string str); //Konstruktor zum Lesen aus einen String ...####.######### weitere Nachkommastellen werden abgeschnitten
    
+   public: precise_time(const precise_time&);
    
 	//Getter
 	public: long long  sec();
@@ -69,7 +70,7 @@ class precise_time{
 	//friends
 	
 	
-	friend  std::ostream& operator << (std::ostream& stream, precise_time& time);
+	friend  std::ostream& operator << (std::ostream& stream, precise_time time);
 	
 	
 	friend   precise_time abs( precise_time time1);
@@ -103,7 +104,17 @@ class precise_time{
 	friend   bool operator >=(precise_time time1, precise_time time2);
 	
 	friend   bool operator <=(precise_time time1, precise_time time2);	
-
+	
+	
+	/*precise_time& operator=(const precise_time& time){
+		
+		if(this==&time)   return *this;
+		this->secnumber=time.secnumber;
+		this->nsecnumber=time.nsecnumber;
+		this->signdigit=time.signdigit;    
+		return *this;
+		}
+*/
 };
 
 
@@ -155,7 +166,7 @@ class precise_time{
 #include <iomanip>
 #include <math.h>
 	
-   std::ostream& operator << (std::ostream& stream, precise_time& time);		//unaeres -
+   std::ostream& operator << (std::ostream& stream, precise_time time);		//unaeres -
 
 	
 

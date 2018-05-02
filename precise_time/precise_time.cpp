@@ -92,7 +92,17 @@ precise_time::precise_time(string str) //Konstruktor zum Lesen aus einen String 
         }
         
         
+        //Copy-Konstruktor
+  precise_time::precise_time(const precise_time& time){
+	  secnumber=time.secnumber;
+	  nsecnumber=time.nsecnumber;
+	  signdigit=time.signdigit;
+	  
+	  
+	 }
         
+        
+  
         //Getter
         
         
@@ -165,7 +175,7 @@ bool operator <=( precise_time time1,  precise_time time2)
 
 
 {
-	cout<<"bin "<<time1.nsec()<<"+"<<time2.nsec()<<endl;
+	//cout<<"bin "<<time1.nsec()<<"+"<<time2.nsec()<<endl;
 	
 	int resultsign;
 	long long seconds, nanoseconds;
@@ -361,7 +371,7 @@ precise_time operator /( precise_time time,  double divisor) {
  
  precise_time operator -( precise_time time1,  precise_time time2)
 {	
-	cout<<"bin. -"<<endl;
+	//cout<<"bin. -"<<endl;
     precise_time result=(time1+(-(time2)));
     
     
@@ -375,14 +385,14 @@ precise_time operator /( precise_time time,  double divisor) {
 
  precise_time operator -( precise_time time) {	
 	precise_time tmp(time.sec(),time.nsec(),-time.signdigit);
-		cout<<"un. -"<<endl;
+		//cout<<"un. -"<<endl;
 
 
 	return tmp;
 	}
 	
 
-std::ostream& operator <<(std::ostream& stream, precise_time& time)  {
+std::ostream& operator <<(std::ostream& stream, precise_time time)  {
 
 		
 	if(time.sign()<0){

@@ -80,7 +80,7 @@ a) mathematische Operatoren:
 b) andere Operatoren:
 
 	zur Ausgabe <<:
-		std::ostream& operator << (std::ostream& stream, precise_time& time);
+		std::ostream& operator << (std::ostream& stream, precise_time time);
 		
 		
 		fuellt links mit " " auf, gibt immer 9 Nachkommastellen aus.
