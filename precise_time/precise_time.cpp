@@ -179,60 +179,60 @@ bool operator <=( precise_time time1,  precise_time time2)
 	
 	int resultsign;
 	long long seconds, nanoseconds;
-	
-	
-	if(time1.signdigit==time2.signdigit){
-		resultsign=time1.signdigit;
+	precise_time bigger(0.0);
+	precise_time smaller(0.0);
+	if(time1.signdigit==time2.signdigit)  {
 		
-		seconds=time1.sec()+time2.sec();
-		nanoseconds=time1.nsec()+time2.nsec();
-		
-		
-		}else if(time1.signdigit<time2.signdigit){		//time 1 negativ, time 2 positiv
+		nanoseconds=time1.nsecnumber+time2.nsecnumber;
+			seconds=time1.secnumber+time2.secnumber;
 			
-			if(abs(time1)>abs(time2)){
-				
-				
-				
-				seconds=time1.sec()-time2.sec();
-				nanoseconds=time1.nsec()-time2.nsec();
-				resultsign=-1;
-				
-				
-				}else{
-					
-					seconds=time2.sec()-time1.sec();
-					nanoseconds=time2.nsec()-time1.nsec();
-					resultsign=1;
-					
-					
-					}
-			
-			
-			}else{		//time 2 negativ, time1 positiv
-				
-				if(abs(time1)>abs(time2)){
-				
-				
-				
-				seconds=time1.sec()-time2.sec();
-				nanoseconds=time1.nsec()-time2.nsec();
-				resultsign=1;
-				
-				
-				}else{
-					
-					seconds=time2.sec()-time1.sec();
-					nanoseconds=time2.nsec()-time1.nsec();
-					resultsign=-1;
-					
-					
-					}
-				
-				
-				
+		cout<<"precise_time: "<<nanoseconds<<endl;
+			if(nanoseconds>=1000000000LL){
+				nanoseconds=nanoseconds-1000000000LL;
+				seconds++;
 				
 				}
+		if(time1.signdigit==1){
+			resultsign=1;
+				
+				
+				
+		} else {
+			resultsign=-1;}}
+			
+		else  { 
+			
+			
+			
+			if(abs(time1)>abs(time2)){
+			
+			 
+			bigger=time1;
+			smaller=time2;
+			
+			
+			}else {
+			bigger=time2;
+			smaller=time1;
+		}
+			//cout<<bigger<<endl<<smaller<<endl;
+			resultsign=bigger.signdigit;
+			
+			nanoseconds=bigger.nsecnumber-smaller.nsecnumber;
+			//cout<<nanoseconds<<endl;;
+			seconds=bigger.secnumber-smaller.secnumber;
+	
+			if(nanoseconds<0){
+				
+				nanoseconds=1000000000LL+nanoseconds;
+				seconds--;
+				
+				}
+			
+				
+				}
+			
+
 	
 
 	

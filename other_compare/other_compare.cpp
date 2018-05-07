@@ -411,7 +411,7 @@ bool Algorithm(vector<unsigned int>& currentPosition,			//returnt ob er fertig i
 				
 				//hier wird entschieden, ob es ein CoincidenceEreignis ist und es wird gleich in die Datei geschrieben
 	
-				 {
+				 { if(verbose) cout<<"abs("<<values[i][currentPosition[i]]<<"-"<<values[indexSmallest][currentPosition[indexSmallest]]<<")="<<abs(values[i][currentPosition[i]]-values[indexSmallest][currentPosition[indexSmallest]])<<endl;;
 					if ((indexSmallest!=i)&&(abs(values[i][currentPosition[i]]-values[indexSmallest][currentPosition[indexSmallest]])<=matchKriterium))
 					{
 						
@@ -492,7 +492,7 @@ int main(int argc, char*argv[])
 	int ch;
 	int column1 = 0;
 	int column2 = 0;
-	string b;
+	long long b;
 	bool notSorted = true;
 	
 	cout << fixed << setprecision(9);		//gibt double auf 9 Nachkommastellen aus
@@ -515,7 +515,7 @@ int main(int argc, char*argv[])
 			return -1;
 			break;
 		
-		case 'b': b = atoi(optarg);
+		case 'b': b = atoi(optarg);		//MatchKriterium als long long in nanosekunden
 			break;
 		case 'c': column1 = atoi(optarg); //momentan nicht individuell fuer jede Datei
 			break;
@@ -533,7 +533,9 @@ int main(int argc, char*argv[])
 		}
 	}
 	int maxTimestampsInVector = maxTimestampsAtOnce/4;
-	precise_time matchKriterium(b);
+	
+	cout<<b<<endl;
+	precise_time matchKriterium(0,b,1);
 	
 	//matchKriterium=1.1;		//debugging
 	if (argc-optind<2)
@@ -563,7 +565,7 @@ int main(int argc, char*argv[])
 		index++;
 	}
 
-
+	cout<<"Das gewählter MatchKriterium ist: "<<matchKriterium<<"s"<<endl;
 	//Hier sollte  Ueberpruefung der Dateien auf Reihenfolge passieren
 
 

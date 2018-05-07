@@ -21,8 +21,8 @@ int main() {
 
 
 
-precise_time stringtime("2.1234567890");
-precise_time stringtime2("-2.1");
+precise_time stringtime("1502047692.000000030");
+precise_time stringtime2("1502047691.000000037");
 cout<< stringtime.sec()<<":"<<stringtime.nsec();
 precise_time product(0.0);
 
@@ -32,8 +32,9 @@ precise_time product(0.0);
 cout<<endl;
 double a=0, b=0, c;
 
-product=5LL*stringtime;
-cout<<stringtime<<endl<<product<<endl;
+product=stringtime-stringtime2;
+cout<< product.sec()<<":"<<product.nsec();
+cout<<product<<endl;
 
 
 

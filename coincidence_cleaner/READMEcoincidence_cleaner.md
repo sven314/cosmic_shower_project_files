@@ -24,5 +24,14 @@ Das Problem ist gering, da solche Situationen vom Algorithmus nicht erzeugt werd
 
 Bugs:
 
-Der Vergleich ist nicht genau genug, geringe Unterschiede werden uebersehen
+
+
+
+
+Behoben mit precise_time Der Vergleich ist nicht genau genug, geringe Unterschiede werden uebersehen
  
+
+
+Weiter:
+
+prüfen, ob Innere immer die letzten n Events sind. (sieht so aus) 
