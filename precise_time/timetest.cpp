@@ -21,21 +21,19 @@ int main() {
 
 
 
-precise_time stringtime("1502047692.000000030");
-precise_time stringtime2("1502047691.000000037");
-cout<< stringtime.sec()<<":"<<stringtime.nsec();
-precise_time product(0.0);
+precise_time stringtime1("1502047692.000000030");
+precise_time stringtime2("1502047692.000000030");
+cout<< stringtime1.sec()<<":"<<stringtime1.nsec();
+
 
 //cout<<time1;
 //cout<<(time1.sec()+time2.sec());
 
 cout<<endl;
-double a=0, b=0, c;
 
-product=stringtime-stringtime2;
-cout<< product.sec()<<":"<<product.nsec();
-cout<<product<<endl;
 
+if(stringtime1!=stringtime2){cout<<"TRUE";}else{ cout<<"FALSE";}
+cout<<"END"<<endl;
 
 
 

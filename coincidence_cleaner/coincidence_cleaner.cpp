@@ -371,7 +371,7 @@ int main(int argc, char*argv[])
 			
 			output<<allCoincidents[i][j].get_station()<<": ";
 			output<<allCoincidents[i][j].get_timestamp()<<"    ";
-			output<<allCoincidents[i][j].get_timestamp()<<"    ";}
+			}
 			
 		
 		
