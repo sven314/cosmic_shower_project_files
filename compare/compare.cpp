@@ -27,6 +27,8 @@
 #include <fstream>
 #include <omp.h>
 #include <utility>
+#include "../precise_time/precise_time.h"
+
 
 struct doneVector
 {
@@ -86,8 +88,8 @@ bool areTimestampsInOrder(string dateiName, bool verbose)
 		cout<<"failed to read from file (in check Timestamp order section of code)"<<endl;
 		exit(EXIT_FAILURE);
 	}
-	long double oldValue = 0.0;
-	long double newValue = 0.0;
+	precise_time oldValue(0.0);
+	
 	long unsigned int lineCounter = 0;
 	bool isInOrder = true;
 	string oneLine;
@@ -100,13 +102,15 @@ bool areTimestampsInOrder(string dateiName, bool verbose)
 		{
 			break;
 		}
-		stringstream str(oneLine);
-		str>>newValue;
+		
+		precise_time newValue(oneLine);
 		cout.precision(9);
 		cout<<fixed;
+		
 		if (oldValue<=newValue)
 		{
 			oldValue = newValue;
+			
 		}
 		else
 		{
@@ -129,8 +133,8 @@ bool areTimestampsInOrder(string dateiName, bool verbose, unsigned long int& lin
 		cout<<"failed to read from file (in check Timestamp order section of code)"<<endl;
 		exit(EXIT_FAILURE);
 	}
-	long double oldValue = 0.0;
-	long double newValue = 0.0;
+	precise_time newValue(0.0);
+	precise_time oldValue(0.0);
 	lineCounter = 0;
 	bool isInOrder = true;
 	string oneLine;
@@ -143,8 +147,8 @@ bool areTimestampsInOrder(string dateiName, bool verbose, unsigned long int& lin
 		{
 			break;
 		}
-		stringstream str(oneLine);
-		str>>newValue;
+		
+		precise_time newValue(oneLine);
 		cout.precision(9);
 		cout<<fixed;
 		if (oldValue<=newValue)
@@ -171,14 +175,14 @@ void skipColumn(istream& data, int col)
 		data.ignore(numeric_limits<streamsize>::max(), ' '); // col Leerzeichen-getrennte Werte uberspringen
 }
 
-void readToVector(ifstream& inputstream, vector<long double>& oneVector, int& maxValues, int& column)
+void readToVector(ifstream& inputstream, vector<precise_time>& oneVector, int& maxValues, int& column)
 {
 	// ueberschreibt einen Vektor mit neuen Werten aus der Datei (aus dem inputstream)
 	// es werden maximal "maxValues" viele Eintraege hinzugefuegt,
 	// es wird gestoppt falls keine weiteren Daten im InputFile sind
 	oneVector.clear();
 	string oneLine;
-	long double oneValue;
+
 	for (unsigned int i = 0; i<maxValues; i++)
 	{
 		if (inputstream.eof())
@@ -190,8 +194,11 @@ void readToVector(ifstream& inputstream, vector<long double>& oneVector, int& ma
 			skipColumn(inputstream, column);
 		}
 		getline(inputstream, oneLine);
-		stringstream str(oneLine);
-		str>>oneValue;
+		//cout<<oneLine<<endl;
+		precise_time oneValue(oneLine);
+		//cout<<str<<endl;
+	
+		//cout<<oneValue<<endl;;
 		oneVector.push_back(oneValue);
 	}
 }// end of readToVector(..)
@@ -222,13 +229,13 @@ void Usage()
 }//end of Usage()
 
 void Algorithm(vector<unsigned int>& base,
-	vector<vector<vector<long double> > >& values,
-	long double& matchKriterium,
+	vector<vector<vector<precise_time> > >& values,
+	precise_time& matchKriterium,
 	ofstream& output,
 	vector<int>& currentVector,
 	doneVector& fertigerVector)
 {
-	time_t t;
+	precise_time t(0.0);
 	/*
 		Algorithmus:    - schaue welcher Eintrag am kleinsten ist
 						- finde ein Match aus den anderen Vektoren (alle Werte durchgehen), Index merken!
@@ -298,14 +305,14 @@ void Algorithm(vector<unsigned int>& base,
 		{
 			//hier wird entschieden ob es ein CoincidenceEreignis ist und es wird gleich in die Datei geschrieben
 			if (dateiEmpty[i]==false) {
-				if ((indexSmallest!=i)&&(fabs(values[i][currentVector[i]][base[i]]-values[indexSmallest][currentVector[indexSmallest]][base[indexSmallest]])<=matchKriterium))
+				if ((indexSmallest!=i)&&(abs(values[i][currentVector[i]][base[i]]-values[indexSmallest][currentVector[indexSmallest]][base[indexSmallest]])<=matchKriterium))
 				{
 					if (coincidents<1)
 					{
-						t = values[indexSmallest][currentVector[indexSmallest]][base[indexSmallest]];
-						struct tm *tm = localtime(&t);
-						char date[20];
-						strftime(date, sizeof(date), "%Y.%m.%d %H:%M:%S", tm);
+						//t = values[indexSmallest][currentVector[indexSmallest]][base[indexSmallest]];
+						//struct tm *tm = localtime(&t);
+						//char date[20];
+						//strftime(date, sizeof(date), "%Y.%m.%d %H:%M:%S", tm);
 						output<<"  "<<indexSmallest<<"  "<<values[indexSmallest][currentVector[indexSmallest]][base[indexSmallest]]<<"  ";
 						coincidents++;
 					}
@@ -327,8 +334,8 @@ int main(int argc, char*argv[])
 	string outputDateiName;
 	vector <string> dateiName;
 	time_t start, end, readToVectorTime, checkTimestampOrderTime, algorithmTime;
-	long double matchKriterium = 0.001;//in Sekunden
-	long double oneValue;
+	
+	precise_time oneValue(0.0);
 	int maxTimestampsAtOnce = 2000;
 
 	// Einlesen der Zusatzinformationen aus der Konsole
@@ -336,7 +343,7 @@ int main(int argc, char*argv[])
 	int ch;
 	int column1 = 0;
 	int column2 = 0;
-	int b = 100;
+	int b = 1000;
 	bool notSorted = true;
 	while ((ch = getopt(argc, argv, "svm:c:o:b:h?"))!=EOF)
 	{
@@ -362,7 +369,7 @@ int main(int argc, char*argv[])
 		}
 	}
 	int maxTimestampsInVector = maxTimestampsAtOnce/4;
-	matchKriterium = b/1000000.0; //Umrechnen, damit man die Eingabe in [us] machen kann
+	precise_time matchKriterium(0,b,1); //Umrechnen, damit man die Eingabe in [us] machen kann
 	if (argc-optind<2)
 	{
 		perror("Falsche Eingabe, zu wenige Argumente!\n");
@@ -472,7 +479,7 @@ int main(int argc, char*argv[])
 	{
 		cout<<endl<<"Starte nun den Algorithmus...."<<endl<<endl;
 	}
-	vector<vector<vector<long double> > > values;
+	vector<vector<vector<precise_time> > > values;
 	//values [index der Datei] [0 oder 1] [werte in long double]
 	values.resize(dateiName.size());
 	vector<unsigned int> base;
