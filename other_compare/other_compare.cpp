@@ -159,6 +159,7 @@ void readToVector(ifstream& inputstream, vector<precise_time>& oneVector, int& m
 		getline(inputstream, oneLine);
 		stringstream str(oneLine);
 		precise_time oneValue(str.str());
+		
 		if (verbose) {cout<<"gelesen: "<<oneValue<<"..."<<endl;}
 		oneVector.push_back(oneValue);
 	}
@@ -341,7 +342,7 @@ bool Algorithm(vector<unsigned int>& currentPosition,			//returnt ob er fertig i
 		}
 
 		for (unsigned int i = 0; i<currentPosition.size(); i++)
-		{
+		{ //cout<<"C"<<endl;
 			if (!finished[i]&&(currentPosition[i]>=(values[i].size()-1))) {		//ueberspringe fertige Vektoren && //Wenn currentPosition[i] bis zur Zahl der Timestamps durchgelaufen ist, ist etwas (eine Datei) fertig.
 				// Das wird für alle Dateien gemacht.
 				{
@@ -381,6 +382,7 @@ bool Algorithm(vector<unsigned int>& currentPosition,			//returnt ob er fertig i
 		}	
 		
 		//Beginn der Suche nach matches:
+		//cout<<"B"<<endl;
 		unsigned int indexSmallest;
 		for (unsigned int i = 0; i<currentPosition.size(); i++)  {		//Beginne die Suche nach indexSmallest bei erster noch nicht fertiger Datei
 			
@@ -405,13 +407,13 @@ bool Algorithm(vector<unsigned int>& currentPosition,			//returnt ob er fertig i
 		
 		int consecutive=false;
 		for (unsigned int i = 0; i<currentPosition.size(); i++)   // Alle nicht fertigen Dateien durchgehen und jeweils mit dem bei indexSmallest vergleichen
-		{
+		{ //cout<<"A"<<endl;
 			if (!finished[i]){
 				
 				
 				//hier wird entschieden, ob es ein CoincidenceEreignis ist und es wird gleich in die Datei geschrieben
 	
-				 { if(verbose) cout<<"abs("<<values[i][currentPosition[i]]<<"-"<<values[indexSmallest][currentPosition[indexSmallest]]<<")="<<abs(values[i][currentPosition[i]]-values[indexSmallest][currentPosition[indexSmallest]])<<endl;;
+				 { if(verbose) cout<<"abs("<<values[i][currentPosition[i]]<<"-"<<values[indexSmallest][currentPosition[indexSmallest]]<<")="<<abs(values[i][currentPosition[i]]-values[indexSmallest][currentPosition[indexSmallest]])<<endl;
 					if ((indexSmallest!=i)&&(abs(values[i][currentPosition[i]]-values[indexSmallest][currentPosition[indexSmallest]])<=matchKriterium))
 					{
 						
