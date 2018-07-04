@@ -40,21 +40,19 @@ struct state{
 void Usage()
 {
 	cout<<endl;
-	cout<<"Compare_v3"<<endl;
-	cout<<"Sortiert <File1>, ... <File n> falls nicht schon sortiert."<<endl;
-	cout<<"Vergleicht <File1>, ... <File n> jeweils miteinander und sucht nach sog. coincidents"<<endl;
-	cout<<"Timestamps und bildet aus beiden die Differenz. Das Ergebnis wird in"<<endl;
-	cout<<"der Form:"<<endl;
-	cout<<"[%Y.%m.%d %H:%M:%S] ... [Differenz1] ... [Differenz n] ... [coincidents]"<<endl;
-	cout<<"in <output> gespeichert. <File1> und <File2> sollte die Form haben:"<<endl;
-	cout<<"[Timestamp]		"<<endl<<endl;
-	cout<<"Benutzung:    "<<"compare"<<" [-vh?][-o<output> -b<Bereich>] File1 File2"<<endl;
+
+
+	
+
+
+
+	cout<<"Benutzung:    "<<"auswertung"<<" [-vh?][-o<output> -b<Bereich>] File"<<endl;
 	cout<<"		Optionen:"<<endl;
 	cout<<"		-h?		  : Zeigt diese Hilfeseite an."<<endl;
 	cout<<"		-c 		  : Zeile, in der die Daten stehen (Standard Zeile 0). momentan noch nicht individuell fuer jede Datei"<<endl;
 	cout<<"		-v		  : Steigert das Verbosity-Level"<<endl;
 	cout<<"		-o <output>	  : Pfad/Name der Output-Datei."<<endl;
-	cout<<"		-n <Stationenzahl>	  : Wahl der Zahl der Stationen. (Standard 2)"<<endl;
+
 	cout<<"     -m <maxWerte>     : Wahl der gleichzeitig in Vektoren eingelesenen Timestamps"<<endl;
 	cout<<"     -C <maxCoincidents>  : Wahl der Hoechstzahl von Koinzidenzen (fuer Debugging)"<<endl;
 	cout<<endl;
@@ -67,18 +65,33 @@ void Usage()
 vector<string> splitString(string str, char d){
 	
 	cerr<<"a";
-	vector<string> result;
 	
+	vector<string> result;
+	result.clear();
 	int position=0, space=0;
 	cerr<<"c";
 	int l=str.size();
 	cerr<<l;
-	while(position<l){
-		//cerr<<"b";
+	while(position<l-1||position<0){
+	
 		space = str.find(d, position+1);
+		if (space<0){
+			
+			space=l;
+			}
+		cerr<<"Space: "<<space<<endl;
+		cerr<<"Position: "<<position<<endl;
 		string substr = str.substr(position, space-position);
+		cerr<<"Substring: "<<substr<<endl;;
 		result.push_back(substr);
+		position=space;
 		}
+	for (int j=0; j<result.size();j++){
+		cerr<<result[j];
+		
+		}
+		
+		cerr<<endl;
 	return result;
 	
 	}
@@ -115,11 +128,11 @@ cerr<<"E";
 		stringstream str(oneLine);
 		
 		vector<string> results;
-		try{
+		
 			cerr<<oneLine.size();
-	 results=splitString(oneLine, ' ');}
-		catch(...){cerr<<"caught expetion"<<endl;
-			continue;}
+	 results=splitString(oneLine, ' ');
+		
+		
 		
 		
 		precise_time oneTime(results[0]);
@@ -201,11 +214,7 @@ int main(int argc, char*argv[])
 	
 	
 int maxTimestampsInVector = maxTimestampsAtOnce/4;
-	
 
-
-	
-	//matchKriterium=1.1;		//debugging
 
 	if (verbose)
 	{
@@ -261,10 +270,10 @@ vector<onOff> liste;
 		readToVector(inputstream, liste, maxTimestampsInVector, column1, verbose);
 	}
 
-vector<state> S;
+vector<state> states;
 vector<bool> b;
 
-
+n=1;
 for (unsigned int i = 0; i<n; i++)	
 {b.push_back(false);}
 
@@ -272,8 +281,8 @@ for (unsigned int i = 0; i<n; i++)
 	{	
 		b[liste[i].source]=liste[i].j;
 		
-		state s={liste[i].time, b};
-		S.push_back(s);
+		state aState={liste[i].time, b};
+		states.push_back(aState);
 	}
 	
 
@@ -282,20 +291,20 @@ for (unsigned int i = 0; i<n; i++)
 	 outstream.open (outputDateiName );
 
   
-	for(unsigned int i=0; i<S.size(); i++){
+	for(unsigned int i=0; i<states.size(); i++){
 		
 		string boolString="";
 		
-		for(unsigned int j=0; j<S[i].s.size(); j++){
+		for(unsigned int j=0; j<states[i].s.size(); j++){
 			
 			
-			if(S[i].s[j]){
+			if(states[i].aState[j]){
 			boolString.append("true");}
 			else{	boolString.append("false");}
 			boolString.append("|");
 			}
 		
-		outstream<<S[i].time<<" "<<boolString<<endl;
+		outstream<<states[i].time<<" "<<boolString<<endl;
 		
 		
 		
