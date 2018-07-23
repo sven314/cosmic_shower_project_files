@@ -1,13 +1,7 @@
-/*                   Stand 18.10.2017
-	compare_v3 sortiert und vergleicht die Zeilen mehrerer Textdateien,
-	indem es zeitlich korrelierte Eintraege erfasst
-	und zusammen mit den Zeitdifferenzen in eine Datei schreibt
-	Ziel: mehr als 2 Eingabe-Dateien (mehrere RasPi-Stationen) -> erfuellt
-	Ziel: Einstellbarkeit der match-Kriterien (ab wann gelten  -> erfuellt
-	Einträge als Zeitlich korreliert?) und versehen der
-	Coincidents mit einem Guetefaktor  -> momentan Guetefaktor== Anzahl Coincidents (an einem Zeitpunkt)  -> erfuellt
+/*                
+	
 */
-//  Geschrieben von <Marvin.Peter@physik.uni-giessen.de>, Teilelemente sind geklaut von <Lukas.Nies@physik.uni-giessen.de>
+//  
 
 // On Linux compile with 'g++ -o Compare Compare.cpp -O' optional: '-fopenmp' flag
 // Vielleicht kann man mit openmp noch etwas mehr optimieren durch multithreading aber eher nicht so viel
@@ -168,7 +162,7 @@ void readToVector(ifstream& inputstream, vector<precise_time>& oneVector, int& m
 void Usage()
 {
 	cout<<endl;
-	cout<<"Compare_v3"<<endl;
+	cout<<"OtherCompare"<<endl;
 	cout<<"Sortiert <File1>, ... <File n> falls nicht schon sortiert."<<endl;
 	cout<<"Vergleicht <File1>, ... <File n> jeweils miteinander und sucht nach sog. coincidents"<<endl;
 	cout<<"Timestamps und bildet aus beiden die Differenz. Das Ergebnis wird in"<<endl;
@@ -182,13 +176,13 @@ void Usage()
 	cout<<"		-c 		  : Zeile, in der die Daten stehen (Standard Zeile 0). momentan noch nicht individuell fuer jede Datei"<<endl;
 	cout<<"		-v		  : Steigert das Verbosity-Level"<<endl;
 	cout<<"		-o <output>	  : Pfad/Name der Output-Datei."<<endl;
-	cout<<"		-b <Bereich>	  : Wahl des Koinzidenten Bereiches in [us] (Standard: 100µs)."<<endl;
+	cout<<"		-b <Bereich>	  : Wahl des Koinzidenten Bereiches in ganzen Nanosekunden, Standard: 100 ns."<<endl;
 	cout<<"     -m <maxWerte>     : Wahl der gleichzeitig in Vektoren eingelesenen Timestamps"<<endl;
 	cout<<"     -C <maxCoincidents>  : Wahl der Hoechstzahl von Koinzidenzen (fuer Debugging)"<<endl;
 	cout<<endl;
-	cout<<"Geschrieben von <Marvin.Peter@physik.uni-giessen.de>"<<endl;
-	cout<<"(Teilelemente sind geklaut von <Lukas.Nies@physik.uni-giessen.de>"<<endl;
-	cout<<"---Stand 20.03.2017---Bugs inclusive"<<endl<<endl;
+	cout<<"Geschrieben von <Sven.Peter@physik.uni-giessen.de>"<<endl;
+	cout<<"(Teilelemente sind geklaut von <Lukas.Nies@physik.uni-giessen.de> und <Marvin.Peter@physik.uni-giessen.de>"<<endl;
+	cout<<"---Stand 23.07.2018---Bugs inclusive"<<endl<<endl;
 }//end of Usage()
 
  //Nimm den Wert bei dem eine Datei fertig war und vergleiche mit allen noch nicht betrachteten Werten de
@@ -494,7 +488,7 @@ int main(int argc, char*argv[])
 	int ch;
 	int column1 = 0;
 	int column2 = 0;
-	long long b;
+	long long b=100;
 	bool notSorted = true;
 	
 	cout << fixed << setprecision(9);		//gibt double auf 9 Nachkommastellen aus
